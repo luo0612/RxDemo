@@ -149,6 +149,7 @@ public class RxPermissions {
     /**
      * Request permissions immediately, <b>must be invoked during initialization phase
      * of your application</b>.
+     * 是否允许: true
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
     public Observable<Boolean> request(final String... permissions) {
@@ -158,6 +159,12 @@ public class RxPermissions {
     /**
      * Request permissions immediately, <b>must be invoked during initialization phase
      * of your application</b>.
+     * <p>
+     * 返回的类型
+     * 所有权限: android.permission.WRITE_EXTERNAL_STORAGE, 是否允许: true
+     * 所有权限: android.permission.READ_EXTERNAL_STORAGE, 是否允许: true
+     * 所有权限: android.permission.RECORD_AUDIO, 是否允许: true
+     * 所有权限: android.permission.CAMERA, 是否允许: true
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
     public Observable<Permission> requestEach(final String... permissions) {
@@ -168,11 +175,20 @@ public class RxPermissions {
      * immediately:直接的
      * Request permissions immediately, <b>must be invoked during initialization phase
      * of your application</b>.
+     * 返回类型:
+     * 所有权限: android.permission.WRITE_EXTERNAL_STORAGE, android.permission.READ_EXTERNAL_STORAGE, android.permission.RECORD_AUDIO, android.permission.CAMERA,
+     * 是否允许: true
      */
     public Observable<Permission> requestEachCombined(final String... permissions) {
         return Observable.just(TRIGGER).compose(ensureEachCombined(permissions));
     }
 
+    /**
+     *
+     * @param trigger
+     * @param permissions
+     * @return
+     */
     Observable<Permission> request(final Observable<?> trigger, final String... permissions) {
         if (permissions == null || permissions.length == 0) {
             throw new IllegalArgumentException("RxPermissions.request/requestEach requires at least one input permission");

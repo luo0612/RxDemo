@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.concurrent.TimeUnit;
@@ -45,23 +45,51 @@ public class RxPermissionsActivity extends AppCompatActivity {
                 throttleFirst(1, TimeUnit.SECONDS).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                rxPermissions.request(permissions).subscribe(new Consumer<Boolean>() {
+//                rxPermissions.request(permissions).subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        Toast.makeText(getApplicationContext(), "" + aBoolean, Toast.LENGTH_SHORT).show();
+//                        Log.e(TAG, "" + aBoolean);
+//                    }
+//                });
+//                rxPermissions.requestEach(permissions).subscribe(new Consumer<Permission>() {
+//                    @Override
+//                    public void accept(Permission permission) throws Exception {
+//                        Log.e(TAG, "" + permission.name + ", 是否允许: " + permission.granted);
+//                    }
+//                });
+                rxPermissions.requestEachCombined(permissions).subscribe(new Consumer<Permission>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        Toast.makeText(getApplicationContext(), "" + aBoolean, Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "" + aBoolean);
+                    public void accept(Permission permission) throws Exception {
+                        Log.e(TAG, "" + permission.name + ", 是否允许: " + permission.granted);
                     }
                 });
             }
         });
-        RxView.clicks(mBtRxPermissionsEnsure)
-                .throttleFirst(1, TimeUnit.SECONDS)
-                .compose(rxPermissions.ensure(permissions))
-                .subscribe(new Consumer<Boolean>() {
+        // .throttleFirst(1, TimeUnit.SECONDS)
+//        RxView.clicks(findViewById(R.id.bt_rx_permissions_ensure))
+//                .compose(rxPermissions.ensure(permissions))
+//                .subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        Toast.makeText(getApplicationContext(), "" + aBoolean, Toast.LENGTH_SHORT).show();
+//                        Log.e(TAG, "" + aBoolean);
+//                    }
+//                });
+//        RxView.clicks(findViewById(R.id.bt_rx_permissions_ensure))
+//                .compose(rxPermissions.ensureEach(permissions))
+//                .subscribe(new Consumer<Permission>() {
+//                    @Override
+//                    public void accept(Permission permission) throws Exception {
+//                        Log.e(TAG, "请求权限: "+permission.name+", 是否准许: "+permission.granted);
+//                    }
+//                });
+        RxView.clicks(findViewById(R.id.bt_rx_permissions_ensure))
+                .compose(rxPermissions.ensureEachCombined(permissions))
+                .subscribe(new Consumer<Permission>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        Toast.makeText(getApplicationContext(), "" + aBoolean, Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "" + aBoolean);
+                    public void accept(Permission permission) throws Exception {
+                        Log.e(TAG, "请求权限: "+permission.name+", 是否准许: "+permission.granted);
                     }
                 });
     }
